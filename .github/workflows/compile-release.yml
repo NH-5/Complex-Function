@@ -1,45 +1,95 @@
-name: Build LaTeX and Upload PDF to Release
+name: Compile LaTeX Notes and Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'  # Run workflow when a tag starting with 'v' is pushed
+
+# Add permissions block to grant necessary rights
+permissions:
+  contents: write  # Needed for creating releases and uploading assets
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up LaTeX
-        uses: actions/setup-tex@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up TeX Live and Chinese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full texlive-lang-chinese fonts-noto-cjk xfonts-wqy fonts-arphic-*
+          
+          # Create fontset configuration to use system fonts
+          cat > ctex-fontset-custom.def << 'EOF'
+          \setCJKmainfont{Noto Sans CJK SC}
+          \setCJKsansfont{Noto Sans CJK SC}
+          \setCJKmonofont{Noto Sans Mono CJK SC}
+          \setCJKfamilyfont{zhsong}{Noto Serif CJK SC}
+          \setCJKfamilyfont{zhhei}{Noto Sans CJK SC}
+          \setCJKfamilyfont{zhfs}{AR PL UKai CN}
+          \setCJKfamilyfont{zhkai}{AR PL UKai CN}
+          EOF
+          
+          # Install the custom fontset to texmf-local
+          sudo mkdir -p /usr/local/share/texmf/tex/latex/ctex/fontset/
+          sudo cp ctex-fontset-custom.def /usr/local/share/texmf/tex/latex/ctex/fontset/
+          sudo texhash
+        
+      - name: Find and compile LaTeX files
+        id: compile-latex
+        run: |
+          mkdir -p compiled_pdfs
+          
+          # Find all note.tex files in subdirectories
+          find . -type f -path "*/note.tex" | while read -r tex_file; do
+            # Get directory name to use as output filename
+            dir_name=$(dirname "$tex_file")
+            folder_name=$(basename "$dir_name")
+            
+            echo "Compiling $tex_file to $folder_name.pdf"
+            
+            # Change to the directory containing the tex file
+            cd "$(dirname "$tex_file")"
+            
+            # Replace the fontset in the tex file if it uses ctexart
+            if grep -q "ctexart" "note.tex"; then
+              # Add fontset option to document class
+              sed -i 's/\\documentclass\(\[[^]]*\]\)\?{ctexart}/\\documentclass[fontset=custom]{ctexart}/' "note.tex"
+            fi
+            
+            # Compile the LaTeX file (using xelatex for better CJK support)
+            xelatex -interaction=nonstopmode "note.tex"
+            xelatex -interaction=nonstopmode "note.tex"
+            
+            # Move back to root directory
+            cd "$GITHUB_WORKSPACE"
+            
+            # Move the compiled PDF to our collection folder with the folder name
+            if [ -f "$(dirname "$tex_file")/note.pdf" ]; then
+              cp "$(dirname "$tex_file")/note.pdf" "compiled_pdfs/$folder_name.pdf"
+            else
+              echo "Warning: Failed to compile $tex_file"
+            fi
+          done
+          
+          # List all compiled PDFs
+          echo "Compiled PDFs:"
+          ls -la compiled_pdfs/
+          
+          # Create a file listing all generated PDFs
+          find compiled_pdfs -name "*.pdf" | sort > compiled_pdfs/pdf_list.txt
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
-          distribution: 'texlive-full' # 或者选择更小的发行版，例如 'texlive-basic'，如果你的项目依赖较少
-
-      - name: Compile LaTeX document
-        run: |
-          #cd your_latex_directory # 将 'your_latex_directory' 替换为你的 LaTeX 文件所在的目录，如果文件在根目录下则不需要这一行
-          latexmk -pdf note.tex # 将 'main.tex' 替换为你的主 LaTeX 文件名
-          # 如果 latexmk 不可用或者你需要更复杂的编译流程，可以使用以下命令：
-          # pdflatex main.tex
-          # bibtex main.aux # 如果使用了 bibtex
-          # pdflatex main.tex
-          # pdflatex main.tex
-
-      - name: Find PDF file
-        id: find_pdf
-        run: |
-          #cd your_latex_directory # 同样替换为你的 LaTeX 文件目录
-          PDF_FILE=$(find . -name "*.pdf" -print -quit)
-          echo "PDF_FILE=$PDF_FILE" >> "$GITHUB_OUTPUT"
-
-      - name: Upload PDF to release
-        uses: actions/upload-release-asset@v1
+          files: compiled_pdfs/*.pdf
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.find_pdf.outputs.PDF_FILE }}
-          asset_name: note.pdf # 你可以自定义上传到 release 中的文件名
-          asset_content_type: application/pdf
