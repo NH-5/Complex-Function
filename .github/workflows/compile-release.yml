@@ -44,7 +44,7 @@ jobs:
           mkdir -p compiled_pdfs
           
           # Find all note.tex files in subdirectories
-          find . -type f -path "*/note.tex" | while read -r tex_file; do
+          find . -type f -path "note.tex" | while read -r tex_file; do
             # Get directory name to use as output filename
             dir_name=$(dirname "$tex_file")
             folder_name=$(basename "$dir_name")
