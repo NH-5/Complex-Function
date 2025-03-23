@@ -1,0 +1,95 @@
+name: Compile LaTeX Notes and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Run workflow when a tag starting with 'v' is pushed
+
+# Add permissions block to grant necessary rights
+permissions:
+  contents: write  # Needed for creating releases and uploading assets
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up TeX Live and Chinese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full texlive-lang-chinese fonts-noto-cjk xfonts-wqy fonts-arphic-*
+          
+          # Create fontset configuration to use system fonts
+          cat > ctex-fontset-custom.def << 'EOF'
+          \setCJKmainfont{Noto Sans CJK SC}
+          \setCJKsansfont{Noto Sans CJK SC}
+          \setCJKmonofont{Noto Sans Mono CJK SC}
+          \setCJKfamilyfont{zhsong}{Noto Serif CJK SC}
+          \setCJKfamilyfont{zhhei}{Noto Sans CJK SC}
+          \setCJKfamilyfont{zhfs}{AR PL UKai CN}
+          \setCJKfamilyfont{zhkai}{AR PL UKai CN}
+          EOF
+          
+          # Install the custom fontset to texmf-local
+          sudo mkdir -p /usr/local/share/texmf/tex/latex/ctex/fontset/
+          sudo cp ctex-fontset-custom.def /usr/local/share/texmf/tex/latex/ctex/fontset/
+          sudo texhash
+        
+      - name: Find and compile LaTeX files
+        id: compile-latex
+        run: |
+          mkdir -p compiled_pdfs
+          
+          # Find all note.tex files in subdirectories
+          find . -type f -path "*/*/note.tex" | while read -r tex_file; do
+            # Get directory name to use as output filename
+            dir_name=$(dirname "$tex_file")
+            folder_name=$(basename "$dir_name")
+            
+            echo "Compiling $tex_file to $folder_name.pdf"
+            
+            # Change to the directory containing the tex file
+            cd "$(dirname "$tex_file")"
+            
+            # Replace the fontset in the tex file if it uses ctexart
+            if grep -q "ctexart" "note.tex"; then
+              # Add fontset option to document class
+              sed -i 's/\\documentclass\(\[[^]]*\]\)\?{ctexart}/\\documentclass[fontset=custom]{ctexart}/' "note.tex"
+            fi
+            
+            # Compile the LaTeX file (using xelatex for better CJK support)
+            xelatex -interaction=nonstopmode "note.tex"
+            xelatex -interaction=nonstopmode "note.tex"
+            
+            # Move back to root directory
+            cd "$GITHUB_WORKSPACE"
+            
+            # Move the compiled PDF to our collection folder with the folder name
+            if [ -f "$(dirname "$tex_file")/note.pdf" ]; then
+              cp "$(dirname "$tex_file")/note.pdf" "compiled_pdfs/$folder_name.pdf"
+            else
+              echo "Warning: Failed to compile $tex_file"
+            fi
+          done
+          
+          # List all compiled PDFs
+          echo "Compiled PDFs:"
+          ls -la compiled_pdfs/
+          
+          # Create a file listing all generated PDFs
+          find compiled_pdfs -name "*.pdf" | sort > compiled_pdfs/pdf_list.txt
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: compiled_pdfs/*.pdf
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

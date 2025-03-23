@@ -1,0 +1,693 @@
+\documentclass[12pt, a4paper, oneside]{ctexart}
+\usepackage{amsmath, amsthm, amssymb, graphicx}
+\usepackage[bookmarks=true, colorlinks, citecolor=blue, linkcolor=black]{hyperref}
+\usepackage{float}
+\usepackage{listings}
+
+%导言区
+\title{复变函数}
+\author{NH5}
+\date{编辑于2025.3.23}
+
+\begin{document}
+\maketitle
+\section{复数与复变函数}
+\subsection{复数的表示}
+定义:$i^2 = -1$,称$i$为虚数单位.
+
+复数有两种表示方式:实部虚部表示法,指数表示法(模长辐角表示法)
+\subsubsection{实部虚部表示法}
+有以下若干表达式:
+\begin{align*}
+    z &= x + iy\\
+    x &= Re(z)\\
+    y &= Im(z)
+\end{align*}
+\subsection{指数表示法}
+如前所述,一个复数可以用两个实数唯一确定,
+表明一个复数可以用平面直角坐标系中唯一的一个点表示.
+因此,就会有复数和向量一一对应.
+就有用向量的模长和与$x$轴的夹角两个量唯一确定一个复数的方法.
+
+先介绍欧拉公式
+\[
+    e^{i\theta} = \cos \theta + i \sin \theta
+\]
+
+由欧拉公式可得指数表示法
+\[
+    z = r(\cos \theta + i \sin \theta) = re^{i\theta}
+\]
+
+$r$为模长$\left \| z \right \|$,$\theta$为与$x$轴的夹角,
+称为辐角$\text{Arg } z = \text{arg }z + 2k\pi$,
+$\text{arg }z$称为主辐角,
+满足$-\pi < \text{arg} z \le \pi$.
+\subsection{共轭复数及复数运算}
+\subsubsection{共轭复数}
+称$\bar{z} = x - iy = re^{i(-\theta)}$为$z$的共轭复数.
+
+有
+\begin{align*}
+    \bar{z_1 + z_2} &= \bar{z_1} + \bar{z_2}\\
+    \bar{z_1 - z_2} &= \bar{z_1} - \bar{z_2}\\
+    \bar{z_1 \times z_2} &= \bar{z_1} \times \bar{z_2}\\
+    \bar{z_1 \div z_2} &= \bar{z_1} \div \bar{z_2}
+\end{align*}
+\subsubsection{复数运算}
+运算包括加减乘除乘幂与方根,共六种运算.
+
+加减一般用实部虚部表示法进行运算,乘除、乘幂与方根一般用指数表示法计算.
+
+乘法:
+\[
+    z_1 z_2 = r_1 r_2 e^{i(\theta_1 + \theta_2)}
+\]
+
+除法
+\[
+    \frac{z_1}{z_2} = \frac{r_1}{r_2}e^{i(\theta_1 - \theta_2)}
+\]
+
+乘幂
+\[
+    z^n = r^n e^{in\theta}
+\]
+
+方根
+\[
+    \sqrt[n]{z} = \sqrt[n]{r} e^{i(\frac{\theta+2k\pi}{n})}
+\]
+\section{解析函数}
+\subsection{概念}
+函数$f(z)$如果在$z_0$及邻域内处处可导,则在$z_0$处解析;如果在区域$D$内处处解析,则函数在区域内解析.
+\subsection{函数解析的充要条件}
+函数解析的充要条件是满足柯西-黎曼方程(Cauchy-Riemann)
+\begin{align*}
+    \frac{\partial u}{\partial x} &= \frac{\partial v}{\partial y}\\
+    \frac{\partial u}{\partial y} &= -\frac{\partial v}{\partial x}
+\end{align*}
+\subsection{初等函数}
+\subsubsection{指数函数}
+\[
+    w = \exp z = e^z = e^x (\cos y + i \sin y)
+\]
+指数函数是周期函数,周期为$2k\pi i$,即$e^{z + 2k\pi i} = e^z$.
+\subsubsection{对数函数}
+\[
+    \text{Ln } z = \ln |z| + i \text{Arg }z = \ln |z| + i \arg z + 2k\pi i
+\]
+记$\ln z = \ln |z| + i \arg z$为主值,有$\text{Ln }z = \ln z + 2k\pi i$.
+\subsubsection{幂函数}
+\[
+    a^b = e^{b\text{Ln }a}
+\]
+\subsubsection{三角函数}
+\begin{align*}
+    \sin z &= \frac{e^{iz}-e^{-iz}}{2i}\\
+    \cos z &= \frac{e^{iz}+e^{-iz}}{2}
+\end{align*}
+\section{积分}
+\subsection{杂项}
+有一个重要结论:
+\[
+    \oint_C \frac{1}{(z-z_0)^{n+1}}dz = \begin{cases}
+        2\pi i &,n=0\\
+        0 &,n\ne 0
+    \end{cases}
+\]
+其中$C:|z-z_0|=r$.
+\subsection{柯西-古萨基本定理}
+设单联通区域$D$边界$C$,函数$f(z)$在区域内解析,边界上连续,则
+\[
+    \oint_C f(z)dz = 0
+\]
+这里$C$除了边界还可以是其他的$D$内$f(z)$连续的闭曲线.
+
+基本定理推广可以得到闭路变形原理:
+
+一个解析函数沿闭曲线的积分,不因闭曲线在区域内作连续变形而改变值.
+
+以及复合闭路定理:
+
+多联通区域$D$内有多条边界$C_1,C_2,...$,$D$内有一闭曲线$C$,则
+\[
+    \oint_C f(z)dz = \sum \oint_{C_k}f(z)dz
+\]
+\subsection{原函数与不定积分}
+牛顿-莱布尼兹公式仍然适用.主要是用于计算非闭曲线的积分.
+\subsection{柯西积分公式}
+函数$f(z)$在区域$D$内解析,边界$C$上连续,$z_0 \in D$,则
+\[
+    f(z_0) = \frac{1}{2\pi i}\oint_C \frac{f(z)}{z-z_0}dz
+\]
+\subsection{高阶导数}
+$$
+    f^{(n)}(z_0) = \frac{n!}{2\pi i}\oint_C\frac{f(z)}{(z-z_0)^{n+1}}dz
+$$
+\subsection{调和函数}
+满足拉普拉斯(Laplace)方程的称为调和函数
+$$
+    \frac{\partial^2 \varphi}{\partial x^2} + \frac{\partial^2 \varphi}{\partial y^2} = 0
+$$
+
+$f(z)=u+iv$解析$\Leftrightarrow$$v$是$u$的共轭调和函数(满足柯西-黎曼方程)
+
+$v$是$u$的共轭调和函数不意味着$u$是$v$的共轭调和函数
+
+掌握偏积分法
+\section{级数}
+记住
+\begin{align*}
+    \frac{1}{1-z} &= \sum_{n=0}^{+\infty}z^n,|z| < 1\\
+    \frac{1}{1-z} &= \sum_{n=1}^{+\infty}-z^{-n},|z|>1\\
+    e^z &= \sum_{n=0}^{+\infty}\frac{z^n}{n!},|z|<+\infty
+\end{align*}
+\subsection{求收敛半径}
+\subsubsection{比值法}
+如果幂级数$\sum a_n z^n$满足$\lim_{n \to \infty}\frac{|a_{n+1}|}{|a_n|} = \lambda$,
+则收敛半径为$R = \frac{1}{\lambda}$.
+\subsubsection{根值法}
+如果幂级数$\sum a_n z^n$满足$\lim_{n \to \infty}\sqrt[n]{|a_n|} = \rho$,
+则收敛半径为$R = \frac{1}{\rho}$.
+\subsection{洛朗级数}
+函数$f(z)$在圆环域$R_1<|z-z_0|<R_2$中解析,有
+$$
+    f(z) = \sum_{n=-\infty}^{\infty}c_n(z-z_0)^n
+$$
+其中
+$$
+    c_n = \frac{1}{2\pi i}\oint_C \frac{f(\zeta)}{(\zeta-z_0)^{n+1}}d\zeta \ne \frac{f^{(n)}(z_0)}{n!}
+$$
+曲线$C$是圆环域内绕$z_0$的任何一条简单闭曲线.
+
+这样称这是洛朗级数.
+
+洛朗级数可以拆成负幂项部分(主要部分)和正幂项部分(解析部分),
+主要部分对应$|R|>R_1$,解析部分对应$|R|<R_2$.
+
+洛朗级数包括了泰勒级数.
+
+直接求洛朗级数很困难,用$\frac{1}{1-z}$计算.
+\section{留数}
+\subsection{孤立奇点}
+\[
+    \lim_{z \to z_0}f(z) =\begin{cases}
+        \text{存在且有限值}&,\text{可去奇点}\\
+        \infty &,\text{$m$级奇点}\\
+        \text{不存在且不为$\infty$}&,\text{本性奇点}
+    \end{cases}
+\]
+$f(z)=(z-z_0)^m\varphi(z)$,
+$\varphi(z)$在$z_0$处解析,且$\varphi(z_0) \ne 0$,
+称$z=z_0$为$f(z)$的$m$级零点.
+\begin{align*}
+    &f^{(k)}(z_0) = 0,k=0,1,2,...,m-1
+    \text{且}f^{(m)}(z_0) \ne 0\\
+    \Leftrightarrow &\text{$m$级零点}
+\end{align*}
+\[
+    f(z)=\frac{1}{(z-z_0)^N}\varphi(z),(\varphi(z)\ne0)\Leftrightarrow\text{$N$级极点}
+\]
+\begin{align*}
+    &f(z)\text{$m$级极点}
+    \Leftrightarrow \frac{1}{f(z)}\text{$m$级零点}
+\end{align*}
+\subsection{留数}
+\subsubsection{定义}
+留数等于函数的洛朗级数展开式中$-1$次项的系数.即
+
+设$z$为孤立奇点,
+$$
+    Res[f(z),z_0]=a_{-1}=\frac{1}{2\pi i}\oint_Cf(z)dz
+$$
+
+区域内有多个奇点时,有
+\[
+    \oint_Cf(z)dz=2\pi i\sum Res[f(z),z_k]
+\]
+\subsection{计算留数}
+不考虑奇点类型的方法:
+\[
+    \text{求洛朗级数系数$a_{-1}$即可}
+\]
+可去奇点:
+\[
+    Res[f(z),z_0]=0
+\]
+$m$级极点:
+$$
+    Res[f(z),z_0] = \begin{cases}
+        \lim_{z \to z_0}(z-z_0)f(z) &,m=1\text{(规则一)}\\
+        \frac{1}{(m-1)!}\lim_{z \to z_0}\frac{d^{m-1}}{dz^{m-1}}[(z-z_0)^mf(z)] &,m \ne 1 \text{(规则二)}
+    \end{cases}
+$$
+无穷远处留数:
+
+平面内有限个奇点,有
+\begin{align*}
+    &Res[f(z),\infty] + \sum Res[f(z),z_k] = 0\\
+    &Res[f(z),\infty] = -Res[f(\frac{1}{z})\cdot \frac{1}{z^2}, 0]
+\end{align*}
+\subsection{应用}
+计算形如$\int_{0}^{2\pi}R(\cos \theta,\sin \theta)d\theta$的积分
+
+前提要求:$R(u,v)$是以$u,v$为变量的二元多项式或分式函数.
+
+令$z = e^{i\theta} = \cos \theta + i\sin \theta$.
+则
+\begin{align*}
+    &d\theta = \frac{dz}{iz},\text{ }
+    \cos \theta = \frac{z^2+1}{2z},\text{ }
+    \sin \theta = \frac{z^2-1}{2iz}\\
+    \Rightarrow&\int_{0}^{2\pi}R(\cos\theta,\sin\theta)d\theta = 
+    \oint_{|z|=1}R(\frac{z^2+1}{2z},\frac{z^2-1}{2iz})\frac{1}{iz}dz\\
+    \text{令}&f(z) = R(\frac{z^2+1}{2z},\frac{z^2-1}{2iz})\frac{1}{iz}\\
+    \Rightarrow &= \oint_{|z|=1}f(z)dz\\
+    &= 2\pi i \sum Res[f(z),z_k]
+\end{align*}
+\section{共形映射}
+只有填空题
+\subsection{概念}
+首先有一映射$w=f(z)$,从点集$C$(定义域,区域)一一映射到点集$\Gamma$(值域,区域).
+
+这里我们想研究$z_0$处导数$w'_0=f'(z_0)$的性质,显然$f'(z_0)$是一个复数,
+所以我们从模长$|f'(z_0)|$和辐角$Arg f'(z_0)$两方面研究.
+\subsubsection{辐角}
+我们研究函数$w=f(z)$的定义域$C$是一个区域,过于大了,先从它的一个子集$C_1$开始.
+
+我们假定$C_1$是一段曲线,$z_0$是曲线上一点,$\Gamma_1$是值域.
+而复数$z$在$C_1$中变化,又可以用参数方程$z=z(t)$描述.
+所以,我们有$w=w(t)$.所以$w'(t)=f'(z)z'(t)$,即
+\[
+    f'(z_0) = \frac{w'(t_0)}{z'(t_0)}
+\]
+复数相除就是模长相除,辐角相减,所以
+\[
+    Arg f'(z_0) = Arg w'(t_0) - Arg z'(t_0)
+\]
+称为转动角
+
+如果我们有另一条曲线$C_2$,两条曲线交点为$z_0$,映射到$\Gamma_2$.可以得到
+\begin{align*}
+    Arg f'_1(z_0) &= Arg w'_1(t_0) - Arg z'_1(t_0)\\
+    Arg f'_2(z_0) &= Arg w'_2(t_0) - Arg z'_2(t_0)
+\end{align*}
+
+对于$z_0$,无论是$C_1$还是$C_2$,都是同一个点$z_0$的同一个映射$f$,所以有
+\begin{align*}
+    Arg f'_1(z_0) &= Arg f'_2(z_0)\text{转动角不变性}\\
+    Arg w'_1(t_0) - Arg z'_1(t_0) &= Arg w'_2(t_0) - Arg z'_2(t_0)
+\end{align*}
+可以得到
+\[
+    Arg w'_1(t_0) - Arg z'_1(t_0) = Arg w'_2(t_0) - Arg z'_2(t_0)
+\]
+等式左边是$\Gamma_1$和$\Gamma_2$夹角,右边是$C_1$和$C_2$夹角.
+
+得到保角性:映射具有保持曲线间夹角大小和方向不变的性质
+\subsubsection{模长}
+$|f'(z_0)|$定义为曲线在$z_0$的伸缩率,显然,它的值与曲线无关,
+所以有伸缩率不变性
+\subsubsection{第一类共形映射}
+如果一个映射$w=f(z)$在区域$D$内是一一映射,满足:保角性和伸缩率不变性.
+则称函数$w=f(z)$为区域$D$内的(第一类)共形映射.
+
+有一个充要条件:
+\[
+    \text{第一类共形映射} \Leftrightarrow \text{解析且}f'(z) \ne 0
+\]
+\subsection{分式线性映射}
+考虑这样一个映射$w=\frac{az+b}{cz+d}$,有
+\[
+    w'=\frac{ad-bc}{(cz+d)^2}
+\]
+
+这样一个分式线性映射由4种映射复合而成
+\begin{align*}
+    w&=z+b \text{ (平移,$b$为复数)}\\
+    w&=e^{i\theta_0}z \text{ (旋转,$\theta_0$为实数)}\\
+    w&=rz \text{ ($r$为正数)}\\
+    w&=\frac{1}{z}
+\end{align*}
+分式线性映射有保角性,保圆性,保对称性
+\section{Fourier变换}
+后文$j$表示虚数单位
+\subsection{Fourier积分}
+先回忆高数下的Fourier级数:
+
+DIrichlet条件:
+\begin{align*}
+    &\text{周期函数$f_T(t)$在区间$[-\frac{T}{2},\frac{T}{2}]$上满足:}\\
+    &\text{1.连续或只有有限个第一类间断点}\\
+    &\text{2.只有有限个极值点}
+\end{align*}
+
+对于一个周期函数$f_T(t)$,
+当在区间$[-\frac{T}{2},\frac{T}{2}]$上满足Dirichlet条件时,
+在连续点处有
+\[
+    f_T(t) = \frac{a_0}{2} + \sum_{n = 1}^{+\infty}(a_n\cos n\omega t + b_n\sin n\omega t)
+\]
+其中
+\begin{align*}
+    \omega &= \frac{2\pi}{T}\\
+    a_n &= \frac{2}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}f_T(t)\cos n\omega tdt\\
+    b_n &= \frac{2}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}f_T(t)\sin n\omega tdt
+\end{align*}
+将Fourier级数改写成复指数形式有
+\begin{align*}
+    f_T(t) &= \sum_{n = -\infty}^{\infty}c_ne^{jn\omega t}\\
+    c_n &= \frac{1}{T}\int_{-\frac{T}{2}}^{\frac{T}{2}}f_T(t)e^{-jn\omega t}dt
+\end{align*}
+
+Fourier级数可以把一般的周期函数转变为三角函数,那么,非周期函数如何处理?
+
+下面讨论这个问题
+
+非周期函数可以看作是$T \to +\infty$的周期函数,所以有如下结论
+
+当函数$f(t)$在$[-\infty,+\infty]$上满足Dirichlet条件,
+且$\int_{-\infty}^{+\infty}|f(t)|dt < +\infty$时有
+\begin{align*}
+    f(t) &= \lim_{T \to +\infty}\frac{1}{T}\sum_{n=-\infty}^{+\infty}\left[\int_{-\frac{T}{2}}^{\frac{T}{2}}f_T(\tau)e^{-jn\omega\tau}d\tau \right]e^{jn\omega t}\\
+    &= \frac{1}{2\pi}\int_{-\infty}^{+\infty}\left[\int_{-\infty}^{+\infty}f(\tau)e^{-j\omega\tau}d\tau \right]e^{j\omega t}d\omega
+\end{align*}
+上式称为Fourier积分,是复数形式,通过欧拉公式并化简可以写成三角形式.
+\[
+    f(t) = \frac{1}{\pi}\int_{0}^{+\infty}\left[\int_{-\infty}^{+\infty}f(\tau)\cos \omega (t-\tau)d\tau \right]d\omega
+\]
+
+通过Fourier积分可以得到Dirichlet积分
+$$
+    \int_{0}^{+\infty}\frac{\sin\omega}{\omega}d\omega = \frac{\pi}{2}
+$$
+\subsection{Fourier变换}
+定义:
+
+(1).Fourier变换
+\[
+    F(\omega) = \int_{-\infty}^{+\infty}f(t)e^{-j\omega t}dt = \mathcal{F}[f(t)]
+\]
+
+(2).Fourier逆变换
+\[
+    f(t) = \frac{1}{2\pi}\int_{-\infty}^{+\infty}F(\omega)e^{j\omega t}d\omega = \mathcal{F}^{-1}[F(\omega)]
+\]
+
+$F(\omega)$称为象函数,$f(t)$称为象原函数.
+\subsection{Fourier变换的性质}
+\subsubsection{线性性质}
+\[
+    \mathcal{F}[af(t)+bg(t)] = aF(\omega) + bG(\omega)
+\]
+\subsubsection{位移性质}
+\begin{align*}
+    \text{时移性质 }&\mathcal{F}[f(t-t_0)] = e^{-j\omega t_0}F(\omega)\\
+    \text{频移性质 }&\mathcal{F}^{-1}[F(\omega-\omega_0)] = e^{j\omega_0 t}f(t)
+\end{align*}
+\subsubsection{微分性质}
+若$\lim_{|t|\to+\infty}f(t)=0$,则$\mathcal{F}[f'(t)]=j\omega F(\omega)$.
+
+一般的
+\begin{align*}
+    &\lim_{|t|\to+\infty}f^{(k)}(t)=0,(k=0,1,2,...,n-1)\\
+    \Rightarrow &\mathcal{F}[f^{(n)}(t)]=(j\omega)^nF(\omega)
+\end{align*}
+类似的
+\begin{align*}
+    &\mathcal{F}^{-1}[F'(\omega)]=-jtf(t)\\
+    &\mathcal{F}^{-1}[F^{(n)}(\omega)]=(-jt)^nf(t)
+\end{align*}
+\subsubsection{积分性质}
+若$\lim_{t\to\infty}\int_{-\infty}^{t}f(t)dt=0$,则
+\[
+    \mathcal{F}[\int_{-\infty}^{t}f(t)dt]=\frac{1}{j\omega}F(\omega)
+\]
+\subsection{卷积}
+如果广义积分$\int_{-\infty}^{+\infty}f_1(\tau)f_2(t-\tau)d\tau$对任何实数$t$都收敛,
+则称它为$f_1(t)$和$f_2(t)$的卷积,记为
+\[
+    f_1(t) * f_2(t) = \int_{-\infty}^{+\infty}f_1(\tau)f_2(t-\tau)d\tau
+\]
+
+交换律
+\[
+    f_1(t) * f_2(t) = f_2(t) * f_1(t)
+\]
+
+结合律
+\[
+    f_1(t) * [f_2(t) * f_3(t)] = [f_1(t) * f_2(t)] * f_3(t)
+\]
+
+分配律
+\[
+    f_1(t) * [f_2(t) + f_3(t)] = f_1(t) * f_2(t) + f_1(t) * f_3(t)
+\]
+
+数乘
+\[
+    a[f_1(t) * f_2(t)] = a[f_1(t)] * f_2(t) = f_1(t) * a[f_2(t)]
+\]
+
+微分
+\[
+    \frac{d}{dt}[f_1(t) * f_2(t)] = \frac{d}{dt}f_1(t) * f_2(t) = f_1(t) * \frac{d}{dt}f_2(t)
+\]
+
+积分
+\[
+    \int_{-\infty}^{t}[f_1(\xi) * f_2(\xi)]d\xi = f_1(t) * \int_{-\infty}^{t}f_2(\xi)d\xi = \int_{-\infty}^{t}f_1(\xi)d\xi * f_2(t)
+\]
+
+绝对值不等式
+\[
+    |f_1(t) * f_2(t)| \le |f_1(t)| * |f_2(t)|
+\]
+
+卷积定理:
+
+设$\mathcal{F}[f_1(t)] = F_1(\omega)$,$\mathcal{F}[f_2(t)] = F_2(\omega)$,则有
+\begin{align*}
+    &\mathcal{F}[f_1(t) * f_2(t)] = F_1(\omega) * F_2(\omega)\\
+    &\mathcal{F}^{-1}[F_1(\omega) * F_2(\omega)] = 2\pi f_1(t) * f_2(t)
+\end{align*}
+\subsection{几个特殊函数}
+\subsubsection{单位脉冲函数}
+定义单位脉冲函数$\delta(t)$满足:
+\begin{align*}
+    &\text{(1) 当$t\ne 0$时, }\delta (t) = 0\\
+    &\text{(2) }\int_{-\infty}^{+\infty}\delta(t)dt=1
+\end{align*}
+\subsubsection{单位阶跃函数}
+设$u(t)$为单位阶跃函数,即
+\[
+    u(t) = \begin{cases}
+        1 &, t > 0\\
+        0 &, t < 0
+    \end{cases}
+\]
+
+则有
+\begin{align*}
+    &\int_{-\infty}^{t}\delta(t)dt = u(t)\\
+    &\frac{du(t)}{dt} = \delta(t)
+\end{align*}
+\subsubsection{单边衰减函数}
+定义如下函数为单边衰减函数:
+\[
+    f(t) = \begin{cases}
+        e^{-\alpha t} &,t \ge 0\\
+        0 &, t < 0
+    \end{cases}(\alpha > 0)
+\]
+\section{Laplace变换}
+考大题,考用Laplace变换求常微分方程.掌握常用函数的Laplace变换
+\subsection{概念}
+Fourier变换有一些前提条件,一是绝对可积的要求;
+二是自变量区间在$(-\infty,+\infty)$,而很多工程问题的自变量区间并不是这个区间,如时间$t>0$.
+所以我们需要对一个任意函数$f(t)$处理
+
+(1).$f(t) \to f(t)\cdot u(t)$,通过这种方式可以补足负数部分为0或变非0值为0,
+可以对函数做Fourier变换,同时负数部分为0使得可以只研究正数部分;
+
+(2).$f(t) \to f(t)\cdot e^{-\beta t}(\beta > 0)$,通过这种方式可以使函数变得绝对可积,
+函数在正数的部分可以尽快衰减.
+
+综合起来就有:
+\begin{align*}
+    \mathcal{F}\left[f(t)u(t)e^{-\beta t}\right] &= \int_{-\infty}^{+\infty}f(t)u(t)e^{-\beta t}e^{-j\omega t}dt\\
+    &= \int_{0}^{+\infty}f(t)e^{-(\beta +j\omega)t}dt
+\end{align*}
+
+记$s = \beta +j \omega$有
+\[
+    F(s) \stackrel{\text{def}}{=} \int_{0}^{+\infty}f(t)e^{-st}dt
+\]
+上述广义积分存在的关键是$Re(s) = \beta$足够大.
+
+定义:
+
+函数$f(t)$定义在$(0,+\infty)$上的实值函数,
+有一复参数$s = \beta + j\omega$,
+如果积分$F(s) = \int_{0}^{+\infty}f(t)e^{-st}dt$对某一区域收敛,
+则有Laplace变换,称$F(s)$为$f(t)$的Laplace变换或象函数.记为
+\[
+    F(s) = \mathcal{L}[f(t)] = \int_{0}^{+\infty}f(t)e^{-st}dt
+\]
+相应的,有逆变换或象原函数的概念,记为$f(t) = \mathcal{L}^{-1}[F(s)]$
+\subsection{常用函数的Laplace变换}
+\begin{align*}
+    &\mathcal{L}[1] = \mathcal{L}[u(t)] = \frac{1}{s}\\
+    &\mathcal{L}\left[\delta(t)\right] = 1\\
+    &\mathcal{L}[e^{at}] = \frac{1}{s-a}\\
+    &\mathcal{L}[t^m] = \frac{m!}{s^{m+1}}\\
+    &\mathcal{L}\left[\cos at\right] = \frac{s}{s^2+a^2}\\
+    &\mathcal{L}\left[\sin at\right] = \frac{a}{s^2+a^2}
+\end{align*}
+前三个比较重要
+\subsection{性质}
+\subsubsection{线性性质}
+\begin{align*}
+    &\mathcal{L}[af(t)+bg(t)] = aF(s) + bG(s)\\
+    &\mathcal{L}^{-1}[aF(s) + bG(s)] = af(t)+bg(t)\\
+    &\mathcal{L}[f(at)] = \frac{1}{a}F\left(\frac{s}{a}\right)\text{(相似性质)}
+\end{align*}
+\subsubsection{微分性质}
+\begin{align*}
+    &\mathcal{L}[f'(t)] = sF(s) - f(0)\\
+    &\mathcal{L}\left[f^{(n)}(t)\right] = s^nF(s) - \sum_{i=0}^{n-1}s^{(n-1)-i}f^{(i)}(0)\\
+    &\text{其中, }f^{(k)}(0) \text{理解为}\lim_{t \to 0^+}f^{(k)}(t)\\
+    &F'(s) = -\mathcal{L}[tf(t)]\\
+    &F^{(n)}(s) = (-1)^n\mathcal{L}[t^nf(t)]
+\end{align*}
+\subsubsection{积分性质}
+\begin{align*}
+    &\mathcal{L}\left[\int_{0}^{t}f(t)dt\right] = \frac{1}{s}F(s)\\
+    &\int_{s}^{\infty}F(s)ds = \mathcal{L}\left[\frac{f(t)}{t}\right]
+\end{align*}
+\subsubsection{位移性质}
+设$a$为任意复常数,则
+\[
+    \mathcal{L}\left[e^{at}f(t)\right] = F(s-a)
+\]
+\subsubsection{延迟性质}
+设当$t<0$时$f(t) = 0$,则对任一非负实数$\tau$有
+\[
+    \mathcal{L}[f(t-\tau)] = e^{-s\tau}F(s)
+\]
+\subsection{卷积}
+如果$t<0$时,$f_1(t) = f_2(t) = 0$,基于上一章的卷积定义有
+\[
+    f_1(t) * f_2(t) = \int_{0}^{t}f_1(\tau)f_2(t-\tau)d\tau,(t\ge 0)
+\]
+仍满足前一章列举的交换律等性质.
+Laplace变换的卷积定理和前一章有细节的不同
+\begin{align*}
+    &\mathcal{L}[f_1(t) * f_2(t)] = F_1(s) * F_2(s)\\
+    &\mathcal{L}^{-1}[F_1(s) * F_2(s)] = f_1(t) * f_2(t)
+\end{align*}
+\subsection{Laplace逆变换}
+推导过程省略,Laplace变换对如下:
+\[
+\begin{cases}
+    F(s) &= \int_{0}^{+\infty}f(t)e^{-st}dt\\
+    f(t) &= \frac{1}{2\pi j}\int_{\beta-j\infty}^{\beta+j\infty}F(s)e^{st}ds,(t>0)
+\end{cases}
+\]
+这里解释反演积分公式的积分上下限,$\beta+j\infty$其实就是$\lim_{y\to +\infty}\beta+jy$,
+$\beta-j\infty$同理.几何上说,积分路径是$s$的复平面内$Re(s)=\beta$的一条垂直实轴的直线
+
+计算Laplace逆变换有留数法和查表法两种方法
+\subsubsection{Laplace逆变换的性质}
+介绍计算方法前先给出几个常用性质
+\begin{align*}
+    &\mathcal{L}^{-1}\left[aF(s)+bG(s)\right]=af(t)+bg(t)\\
+    &\mathcal{L}^{-1}\left[e^{-s\tau}F(s)\right]=f(t-\tau)u(t-\tau)\\
+    &\mathcal{L}^{-1}\left[F(s-a)\right]=e^{at}f(t)\\
+    &\mathcal{L}^{-1}\left[F_1(s)\cdot F_2(s)\right]=f_1(t)*f_2(t)\\
+    &\mathcal{L}^{-1}\left[F'(s)\right]=-tf(t)\\
+    &\mathcal{L}^{-1}\left[\frac{1}{s}F(s)\right]=\int_{0}^{t}f(t)dt
+\end{align*}
+\subsubsection{留数法}
+设$F(s)$在半平面内$Re(s)<c$,有有限个孤立奇点,半平面内孤立奇点外的部分处处解析,
+且$s\to\infty$时,$F(s)\to 0$,则
+\[
+    f(t) = \frac{1}{2\pi j}\int_{\beta-j\infty}^{\beta+j\infty}F(s)e^{st}ds
+    = \sum_{k=1}^{n}Res[F(s)e^{st}, s_k],(t>0)
+\]
+\subsubsection{查表法}
+\begin{align*}
+    &\mathcal{L}^{-1}[\frac{1}{s}]=1\\
+    &\mathcal{L}^{-1}[\frac{1}{s-a}]=e^{at}\\
+    &\mathcal{L}^{-1}[1]=\delta(t)
+\end{align*}
+这三个比较重要
+\begin{align*}
+    &\mathcal{L}^{-1}[\frac{m!}{s^{m+1}}]=t^m\\
+    &\mathcal{L}^{-1}[\frac{m!}{(s-a)^{m+1}}]=e^{at}t^m
+\end{align*}
+\begin{align*}
+    &\mathcal{L}^{-1}[\frac{s}{s^2+b^2}]=\cos bt\\
+    &\mathcal{L}^{-1}[\frac{s-a}{(s-a)^2+b^2}]=e^{at}\cos bt\\
+    &\mathcal{L}^{-1}[\frac{b}{s^2+b^2}]=\sin bt\\
+    &\mathcal{L}^{-1}[\frac{b}{(s-a)^2+b^2}]=e^{at}\sin bt
+\end{align*}
+\subsection{应用}
+用Laplace变换求解常微分方程
+
+核心工具是
+\[
+    \mathcal{L}\left[f^{(n)}(t)\right] = s^nF(s) - \sum_{i=0}^{n-1}s^{(n-1)-i}f^{(i)}(0)
+\]
+
+核心思路是把关于象原函数的原微分方程Laplace变换成关于象函数的普通函数方程,
+再把解出的象函数Lapalce逆变换回象原函数,即原方程的解.
+
+这里给出一个例题
+
+例:用Laplace变换求解微分方程
+\[
+    x''(t) - 2x'(t) + 2x(t) = 2e^{t}\cos t,x(0) = x'(0) = 0
+\]
+
+解:
+\begin{align*}
+    &\text{设}X(s) = \mathcal{L}[x(t)]\text{ ,则 }x(t)=\mathcal{L}^{-1}[X(s)]\\
+    \Rightarrow & X''(s) = s^2X(s) - sx(0) - x'(0) = s^2X(s)\\
+    & X'(s) = sX(s) - x(0) = sX(s)\\
+    & \mathcal{L}[e^t\cos t] = \frac{s-1}{(s-1)^2+1^2}\\
+    \Rightarrow & s^2X(s) - 2[sX(s)] + 2[X(s)] = \frac{2(s-1)}{(s-1)^2+1}\\
+    \Rightarrow & X(s) = \frac{2(s-1)}{\left[(s-1)^2+1\right]^2}
+\end{align*}
+
+做逆变换得
+\begin{align*}
+    x(t) &= \mathcal{L}^{-1}[X(s)]\\
+    &= \mathcal{L}^{-1}\left[\frac{2(s-1)}{\left[(s-1)^2+1\right]^2}\right]\\
+    \text{注意到 }&\left[-\frac{1}{(s-1)^2+1}\right]' = \frac{2(s-1)}{\left[(s-1)^2+1\right]^2}\\
+    & \mathcal{L}^{-1}[\frac{1}{(s-1)^2+1}] = e^t\sin t\\
+    \Rightarrow &= -t\mathcal{L}^{-1}[-\frac{1}{(s-1)^2+1}](\mathcal{L}^{-1}\left[F'(s)\right]=-tf(t))\\
+    &= t\mathcal{L}^{-1}[\frac{1}{(s-1)^2+1}]\\
+    &= te^t\sin t(\mathcal{L}^{-1}[\frac{b}{(s-a)^2+b^2}]=e^{at}\sin bt)
+\end{align*}
+
+还有另一种逆变换方式
+\begin{align*}
+    x(t) &= \mathcal{L}^{-1}\left[\frac{2(s-1)}{\left[(s-1)^2+1\right]^2}\right]\\
+    &= e^t\mathcal{L}^{-1}\left[\frac{2s}{[s^2+1]^2}\right](\mathcal{L}^{-1}\left[F(s-a)\right]=e^{at}f(t))\\
+    &= e^t\mathcal{L}^{-1}\left[(\frac{-1}{s^2+1})'\right]\\
+    &= te^t\mathcal{L}^{-1}\left[\frac{1}{s^2+1}\right](\mathcal{L}^{-1}\left[F'(s)\right]=-tf(t))\\
+    &= te^t\sin t(\mathcal{L}^{-1}[\frac{b}{s^2+b^2}]=\sin bt)
+\end{align*}
+
+还有另一题,这里不再给出完整内容.只这题介绍Laplace逆变换的部分
+\begin{align*}
+    X(s) &= \frac{s^2+6s+6}{(s+1)^2(s+3)} = \frac{7}{4(s+1)}+\frac{1}{2(s+1)^2}-\frac{3}{4(s+3)}\\
+    x(t) &= \mathcal{L}^{-1}\left[X(s)\right]\\
+    &= \frac{7}{4}\mathcal{L}^{-1}\left[\frac{1}{s+1}\right]+\frac{1}{2}\mathcal{L}^{-1}\left[\frac{1}{(s+1)^2}\right]
+    -\frac{3}{4}\mathcal{L}^{-1}\left[\frac{1}{s+3}\right]\\
+    &= \frac{7}{4}e^{-t} + \frac{1}{2}te^{-t} - \frac{3}{4}e^{-3t}
+\end{align*}
+\end{document}
