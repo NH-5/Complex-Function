@@ -13,9 +13,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up LaTeX
-        uses: actions/setup-tex@v1
+        uses: xu-cheng/latex-action@v2
         with:
-          distribution: 'texlive-full'
+          root_file: note.tex
 
       - name: List files before compilation
         run: |
@@ -23,8 +23,8 @@ jobs:
 
       - name: Compile LaTeX document
         run: |
-          cd your_latex_directory # 替换为你的目录
-          latexmk -pdf main.tex # 替换为你的主文件
+          #cd your_latex_directory # 替换为你的目录
+          latexmk -pdf note.tex # 替换为你的主文件
 
       - name: List files after compilation
         run: |
@@ -33,10 +33,10 @@ jobs:
       - name: Find PDF file
         id: find_pdf
         run: |
-          cd your_latex_directory # 替换为你的目录
+          #cd your_latex_directory # 替换为你的目录
           PDF_FILE=$(find . -name "*.pdf" -print -quit)
           echo "PDF_FILE=$PDF_FILE" >> "$GITHUB_OUTPUT"
-          echo "Found PDF file: ${{ steps.find_pdf.outputs.PDF_FILE }}" # 打印找到的 PDF 文件路径
+          echo "Found PDF file: $PDF_FILE" # 打印找到的 PDF 文件路径
 
       - name: Upload PDF to release
         uses: actions/upload-release-asset@v1
