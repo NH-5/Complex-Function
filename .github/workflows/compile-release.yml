@@ -3,11 +3,10 @@ name: Build LaTeX and Upload PDF to Release
 on:
   push:
     tags:
-      - 'v*'  # Run workflow when a tag starting with 'v' is pushed
+      - 'v*'
 
-# Add permissions block to grant necessary rights
 permissions:
-  contents: write  # Needed for creating releases and uploading assets
+  contents: write
 
 jobs:
   build:
@@ -22,14 +21,18 @@ jobs:
         with:
           root_file: note.tex
 
+      - name: Install CJK language support (including fandol fonts)
+        run: |
+          sudo apt-get update
+          sudo apt-get install texlive-lang-cjk
+
       - name: List files before compilation
         run: |
           ls -R
 
       - name: Compile LaTeX document
         run: |
-          #cd your_latex_directory # 替换为你的目录
-          latexmk -pdf note.tex # 替换为你的主文件
+          latexmk -pdf note.tex
 
       - name: List files after compilation
         run: |
@@ -38,10 +41,9 @@ jobs:
       - name: Find PDF file
         id: find_pdf
         run: |
-          #cd your_latex_directory # 替换为你的目录
           PDF_FILE=$(find . -name "*.pdf" -print -quit)
           echo "PDF_FILE=$PDF_FILE" >> "$GITHUB_OUTPUT"
-          echo "Found PDF file: $PDF_FILE" # 打印找到的 PDF 文件路径
+          echo "Found PDF file: $PDF_FILE"
 
       - name: Upload PDF to release
         uses: actions/upload-release-asset@v1
