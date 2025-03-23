@@ -1,8 +1,13 @@
 name: Build LaTeX and Upload PDF to Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'  # Run workflow when a tag starting with 'v' is pushed
+
+# Add permissions block to grant necessary rights
+permissions:
+  contents: write  # Needed for creating releases and uploading assets
 
 jobs:
   build:
