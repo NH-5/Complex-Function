@@ -1,58 +1,33 @@
-name: Build LaTeX and Upload PDF to Release
+name: Build LaTeX and Create Release
 
 on:
   push:
     tags:
       - 'v*'
 
-permissions:
-  contents: write
-
 jobs:
-  build:
+  build_and_release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up LaTeX
-        uses: xu-cheng/latex-action@v2
+        uses: actions/checkout@v3
+      
+      - name: Set up LaTeX environment
+        uses: xu-cheng/latex-action@v3
         with:
+          # 请根据你的主tex文件名修改这里
           root_file: note.tex
-
-      - name: Install CJK language support (including fandol fonts)
-        run: |
-          sudo apt-get update
-          sudo apt-get install texlive-lang-cjk
-
-      - name: List files before compilation
-        run: |
-          ls -R
-
-      - name: Compile LaTeX document
-        run: |
-          latexmk -pdf note.tex
-
-      - name: List files after compilation
-        run: |
-          ls -R
-
-      - name: Find PDF file
-        id: find_pdf
-        run: |
-          PDF_FILE=$(find . -name "*.pdf" -print -quit)
-          echo "PDF_FILE=$PDF_FILE" >> "$GITHUB_OUTPUT"
-          echo "Found PDF file: $PDF_FILE"
-
+          # 如果你有多个需要编译的文件，可以这样列出：
+          # root_file: |
+          #   file1.tex
+          #   file2.tex
+          
       - name: Create Release
-        id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.find_pdf.outputs.PDF_FILE }}
-          name: Release ${{ github.ref_name }}
+          files: |
+            *.pdf
           draft: false
-          prerelease: false
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
