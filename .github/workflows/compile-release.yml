@@ -45,12 +45,14 @@ jobs:
           echo "PDF_FILE=$PDF_FILE" >> "$GITHUB_OUTPUT"
           echo "Found PDF file: $PDF_FILE"
 
-      - name: Upload PDF to release
-        uses: actions/upload-release-asset@v1
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.find_pdf.outputs.PDF_FILE }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.find_pdf.outputs.PDF_FILE }}
-          asset_name: output.pdf
-          asset_content_type: application/pdf
