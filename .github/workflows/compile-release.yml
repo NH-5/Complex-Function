@@ -15,12 +15,14 @@ jobs:
       - name: Set up LaTeX environment
         uses: xu-cheng/latex-action@v3
         with:
-          # 请根据你的主tex文件名修改这里
+          # 指定要编译的文件为note.tex
           root_file: note.tex
-          # 如果你有多个需要编译的文件，可以这样列出：
-          # root_file: |
-          #   file1.tex
-          #   file2.tex
+          # 添加编译器参数，支持中文和特殊字符
+          args: -xelatex -file-line-error -halt-on-error -interaction=nonstopmode
+          # 如果你使用了特殊宏包，可以在此处添加
+          extra_system_packages: "fontconfig"
+          # 根据需要使用XeLaTeX编译中文文档
+          latexmk_use_xelatex: true
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
