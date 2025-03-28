@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+# 添加权限配置
+permissions:
+  contents: write  # 这给予工作流写入仓库内容的权限，包括创建releases
+
 jobs:
   build_and_release:
     runs-on: ubuntu-latest
